@@ -1,7 +1,24 @@
-import motor.motor_asyncio
+import asyncio
+from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo.server_api import ServerApi
 
-#Just copied from example Github, changed the url. Not sure if works. 
-#Anyone can change when doing the connect to db ticket
-client = motor.motor_asyncio.AsyncIOMotorClient('mongodb://read:XgFXpjCQZznKddf4KvtW@cta-simpipe-protodb.zeuthen.desy.de/?authMechanism=DEFAULT&authSource=admin&tls=true')
-#database = client.TodoList
-#collection = database.todo
+uri = "mongodb://read:XgFXpjCQZznKddf4KvtW@cta-simpipe-protodb.zeuthen.desy.de/?authMechanism=DEFAULT&authSource=admin&tls=true"
+
+client = AsyncIOMotorClient(uri, server_api=ServerApi('1'))
+# Not quite sure these are what we need, but we can work with that and maybe change later.
+db = client["CTA-Simulation-Model"]
+telescopes_collection = db["telescopes"]
+
+async def ping_server():
+  # Send a ping to confirm a successful connection
+  try:
+    await client["CTA-Simulation-Model"].command('ping')  
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+    return "Pinged your deployment. You successfully connected to MongoDB!"
+  except Exception as e:
+    print(e)
+    return repr(e)
+asyncio.run(ping_server())
+
+async def print_client():
+    return await ping_server()

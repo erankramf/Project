@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
+from Database import print_client
 
 app = FastAPI()
 
@@ -13,10 +16,11 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-@app.get("/pingpong")
-def getter():
-    return "Ping Ping"
+@app.get("/PingDatabase")
+async def getter():
+    response = await print_client()
+    return response
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print("hello")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
