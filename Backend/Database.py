@@ -1,12 +1,3 @@
-
-#Just copied from example Github, changed the url. Not sure if works. 
-#Anyone can change when doing the connect to db ticket
-# client = motor.motor_asyncio.AsyncIOMotorClient('mongodb://read:XgFXpjCQZznKddf4KvtW@cta-simpipe-protodb.zeuthen.desy.de/?authMechanism=DEFAULT&authSource=admin&tls=true')
-
-#database = client.TodoList
-#collection = database.todo
-
-
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.server_api import ServerApi
@@ -24,8 +15,8 @@ async def ping_server():
     return "Pinged your deployment. You successfully connected to MongoDB!"
   except Exception as e:
     print(e)
-    return str(e)
-      
+    return repr(e)
+asyncio.run(ping_server())
 
 async def print_client():
     return await ping_server()
