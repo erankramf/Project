@@ -2,18 +2,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from Database import telescopes_collection
-
 app = FastAPI()
 
 
-async def get_telescope(telescope_id: str):
-    # Perform logic to retrieve telescope data from the database
-    telescope_data = await telescopes_collection.find_one({"_id": telescope_id})
-    return telescope_data
+from Database import get_telescopes_list, get_telescope_parameters
 
-async def add_telescope(telescope_data: dict):
-    # Perform logic to add a new telescope to the database
-    result = await telescopes_collection.insert_one(telescope_data)
-    return result.inserted_id
+async def get_telescopes():
+    telescope_list = await get_telescopes_list()
+    return telescope_list
 
+async def get_params_by_name(telescope_name: str):
+    params_list = await get_telescope_parameters(telescope_name)
+    return params_list
