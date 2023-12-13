@@ -5,8 +5,8 @@ import uvicorn
 from Database import print_client
 
 from Service import(
-    getParamsByName,
-    getTelescopeByName,
+    get_params_by_name,
+    get_telescope_by_name,
 )
 
 app = FastAPI()
@@ -27,23 +27,20 @@ async def getter():
     return response
 
 #do we want all the parameters?
-@app.get("getData/Telescopes/TelescopeName") #we can change how this path looks depending on the things we will need to get done
-async def getParamsByName(TelescopeName):
-    response = await getParamsByName(TelescopeName) #Service-Call
+@app.get("Telescopes/Names/{TelescopeName}") #we can change how this path looks
+async def get_params_byName(TelescopeName):
+    response = await get_params_by_name(TelescopeName) #Service-Call
     if response:
         return response
     raise HTTPException(404, f"couldn't find Telescope Parameters")
 
-#what does getting the telescope do? ByName because maybe we will also want to get them by ID
-@app.get("/getData/Telescopes/{TelescopeName}")
-async def getTelescopeByName(TelescopeName):
-    response = await getTelescopeByName(TelescopeName)
+@app.get("Telescopes/Names")
+async def get_telescopes():
+    response = await get_telescopes()
     if response:
         return response
     raise HTTPException(404, f"couldn't find Telescope")
 
-#maybe a "getTelescopes" function for displaying all the Telescopes that are in the Database at the moment
-#I don't understand the getTelescope() one, what do we get there?
 
 
 # Press the green button in the gutter to run the script.
