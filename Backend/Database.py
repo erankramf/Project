@@ -1,10 +1,8 @@
-import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.server_api import ServerApi
 
 
 uri = "mongodb://read:XgFXpjCQZznKddf4KvtW@cta-simpipe-protodb.zeuthen.desy.de/?authMechanism=DEFAULT&authSource=admin&tls=true"
-#uri = "mongodb://localhost:27017" #local for testing
 
 client = AsyncIOMotorClient(uri, server_api=ServerApi('1'))
 # Not quite sure these are what we need, but we can work with that and maybe change later.
@@ -20,24 +18,25 @@ async def ping_server():
   except Exception as e:
     print(e)
     return repr(e)
-asyncio.run(ping_server())
 
-async def print_client():
-    return await ping_server()
+
+async def print_client() -> str:
+  return await ping_server()
   
-async def getParamsByName(TelName):
-  cursor = telescopes_collection.find({"Telescope":TelName})
-  Params = []
-  async for telescope in cursor:
-    if telescope not in Params:
-      Params.append(telescope.get("Parameters"))
-  return Params
+async def get_params_by_telescope_name(TelName : str) -> list[str]:
+  params = await telescopes_collection.aggregate(  [
+    { '$match': { 'Telescope': 'South-SCT-D' } },
+    { '$group': { '_id': '$Parameter' } }
+  ]).to_list(None)
+  return list(map(lambda tel: tel["_id"],params))
   
   
-async def getTelescopes():
-  TelescopeList = []
-  cursor = await telescopes_collection.find()
-  async for tel in cursor:
-    if tel.get("Telescope") not in TelescopeList:
-      TelescopeList.append(tel.get("Telescope"))
-  return TelescopeList
+async def get_telescopes() -> list[str]:
+  telescopes = await telescopes_collection.aggregate([
+    {
+        '$group': {
+            '_id': '$Telescope'
+        }
+    }
+  ]).to_list(None)
+  return list(map(lambda tel: tel["_id"],telescopes))
