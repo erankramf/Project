@@ -1,6 +1,6 @@
-import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.server_api import ServerApi
+
 
 uri = "mongodb://read:XgFXpjCQZznKddf4KvtW@cta-simpipe-protodb.zeuthen.desy.de/?authMechanism=DEFAULT&authSource=admin&tls=true"
 
@@ -18,7 +18,25 @@ async def ping_server():
   except Exception as e:
     print(e)
     return repr(e)
-asyncio.run(ping_server())
 
-async def print_client():
-    return await ping_server()
+
+async def print_client() -> str:
+  return await ping_server()
+  
+async def get_params_by_telescope_name(TelName : str) -> list[str]:
+  params = await telescopes_collection.aggregate(  [
+    { '$match': { 'Telescope': TelName } },
+    { '$group': { '_id': '$Parameter' } }
+  ]).to_list(None)
+  return list(map(lambda tel: tel["_id"],params))
+  
+  
+async def get_telescopes() -> list[str]:
+  telescopes = await telescopes_collection.aggregate([
+    {
+        '$group': {
+            '_id': '$Telescope'
+        }
+    }
+  ]).to_list(None)
+  return list(map(lambda tel: tel["_id"],telescopes))
