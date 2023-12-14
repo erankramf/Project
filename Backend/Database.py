@@ -25,7 +25,7 @@ async def print_client() -> str:
   
 async def get_params_by_telescope_name(TelName : str) -> list[str]:
   params = await telescopes_collection.aggregate(  [
-    { '$match': { 'Telescope': 'South-SCT-D' } },
+    { '$match': { 'Telescope': TelName } },
     { '$group': { '_id': '$Parameter' } }
   ]).to_list(None)
   return list(map(lambda tel: tel["_id"],params))
