@@ -1,8 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from Database import print_client
+from Database import printClientDb
+
+from Service import(
+    getParamsByNameService,
+    getTelescopesService,
+)
 
 app = FastAPI()
 
@@ -18,8 +23,24 @@ app.add_middleware(
 
 @app.get("/PingDatabase")
 async def getter():
-    response = await print_client()
+    response = await printClientDb()
     return response
+
+#do we want all the parameters?
+@app.get("/Telescopes/Names/{TelescopeName}") #we can change how this path looks
+async def getParamsByNameController(TelescopeName):
+    response = await getParamsByNameService(TelescopeName) #Service-Call
+    if response:
+        return response
+    raise HTTPException(404, f"couldn't find Telescope Parameters")
+
+@app.get("/Telescopes/Names")
+async def getTelescopesController():
+    response = await getTelescopesService()
+    if response:
+        return response
+    raise HTTPException(404, f"couldn't find Telescope")
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
