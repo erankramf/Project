@@ -5,7 +5,7 @@ const CollapsibleComponent = ({ title, children }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
+    setIsCollapsed(!isCollapsed); 
   };
 
   return (
