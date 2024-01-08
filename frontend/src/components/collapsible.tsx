@@ -20,3 +20,4 @@ const CollapsibleComponent = ({ title, children }) => {
 };
 
 export default CollapsibleComponent;
+
