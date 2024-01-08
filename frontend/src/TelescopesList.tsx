@@ -8,8 +8,8 @@ interface Telescope {
   parameter: string;
   version: string;
   type: string;
-  file: boolean;
   value:string;
+  file: boolean; 
 }
 
 const TelescopesList: React.FC = () => {
